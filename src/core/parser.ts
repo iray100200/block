@@ -16,17 +16,34 @@ function parse(template: String) {
   let beginDefine = false;
   let beginGroup = false;
   HTMLParser.Parser(template, {
-    onopentag: function (name, atttrs) {
+    onopentag: function (name: String, atttrs: any) {
       switch (name) {
         case TAGS.RENDER:
+          beginRender = true
           break
         case TAGS.SCENE:
+          if (beginRender) {
+            beginScene = true
+          }
           break
         case TAGS.CAMERA:
+          if (beginRender) {
+            beginScene = true
+          }
+          break
+        case TAGS.DEFINE:
+          if (beginRender) {
+            beginDefine = true
+          }
+          break
+        case TAGS.GROUP:
+          if (beginScene) {
+            beginGroup = true
+          }
           break
       }
     },
-    onclosetag: function (name) {
+    onclosetag: function (name: String) {
 
     }
   })
