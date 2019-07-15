@@ -18,18 +18,11 @@
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
-    "rootDirs": ["website"]
+    "rootDirs": ["src"]
   },
   "exclude": [
     "node_modules",
-    "build",
-    "scripts",
-    "acceptance-tests",
-    "webpack",
-    "jest",
-    "src/setupTests.ts"
-  ],
-  "include": [
-    "components/**/*"
+    "dist",
+    "webpack"
   ]
 }
