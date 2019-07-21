@@ -1,14 +1,15 @@
-import THREE from 'three'
+import THREE, { Material } from 'three'
 import { TAGS } from './constants'
 import { GeometryParser } from './geometry'
+import { MaterialParser } from './material'
 
-export function parse(template: String) {
+export function parse(template: String, container: HTMLElement) {
   let scene: THREE.Scene
   let camera: THREE.Camera
   let renderer: THREE.Renderer
   let groups = []
   let lights = []
-  let materials = []
+  let materials: Array<MaterialParser> = []
   let geometries: Array<GeometryParser> = []
   let beginRender = false
   let beginScene = false
@@ -22,6 +23,9 @@ export function parse(template: String) {
       switch (name) {
         case TAGS.RENDER:
           beginRender = true
+          renderer = new THREE.WebGLRenderer()
+          renderer.render(scene, camera)
+          container.appendChild(renderer.domElement)
           break
         case TAGS.SCENE:
           if (beginRender) {
@@ -41,6 +45,9 @@ export function parse(template: String) {
             beginDefine = true
           }
           break
+        case TAGS.MATERIAL:
+          const material = new MaterialParser(attrs)
+          materials.push(material)
         case TAGS.GROUP:
           if (beginScene) {
             beginGroup = true
