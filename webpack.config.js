@@ -1,9 +1,10 @@
 const path = require('path')
+const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 module.exports = {
   entry: './src/index.ts',
   output: {
-    filename: '[name].min.js',
+    filename: 'block3d.min.js',
     path: path.resolve(process.cwd(), 'dist')
   },
   resolve: {
@@ -25,5 +26,10 @@ module.exports = {
     port: 9000,
     hot: true,
     inline: true
-  }
+  },
+  plugins: [
+    new CopyWebpackPlugin([
+      { from: 'test/**/*', to: '[name].[ext]' }
+    ])
+  ]
 }

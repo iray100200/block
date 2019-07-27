@@ -4,7 +4,7 @@
   "description": "Building a easy-to-use 3D rendering technology for webGL",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "webpack-dev-server --progress --hot"
   },
   "repository": {
     "type": "git",
@@ -21,6 +21,7 @@
   "homepage": "https://github.com/iray100200/block#readme",
   "devDependencies": {
     "@types/three": "^0.103.2",
+    "copy-webpack-plugin": "^5.0.4",
     "three": "^0.106.2",
     "ts-loader": "^6.0.4",
     "typescript": "^3.5.3",

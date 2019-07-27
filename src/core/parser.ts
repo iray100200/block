@@ -1,9 +1,12 @@
-import THREE, { Material } from 'three'
+import * as THREE from 'three'
 import { TAGS } from './constants'
 import { GeometryParser } from './geometry'
 import { MaterialParser } from './material'
+import { LightParser } from './light'
 
-export function parse(template: String, container: HTMLElement) {
+const HTMLParser = require("htmlparser2")
+
+function parse(template: String, container: HTMLElement) {
   let scene: THREE.Scene
   let camera: THREE.Camera
   let renderer: THREE.Renderer
@@ -13,12 +16,11 @@ export function parse(template: String, container: HTMLElement) {
   let geometries: Array<GeometryParser> = []
   let beginRender = false
   let beginScene = false
-  let beginCamera = false
   let beginLights = false
   let beginDefine = false
   let beginGroup = false
   let group: Array<GeometryParser>
-  require('htmlparser2').Parser(template, {
+  const parser = new HTMLParser.Parser({
     onopentag: async function (name: String, attrs: any) {
       switch (name) {
         case TAGS.RENDER:
@@ -45,9 +47,19 @@ export function parse(template: String, container: HTMLElement) {
             beginDefine = true
           }
           break
+        case TAGS.LIGHTS:
+          beginLights = true
+          break
+        case TAGS.LIGHT:
+          if (beginLights) {
+            const light = new LightParser(attrs)
+            lights.push(light)
+          }
         case TAGS.MATERIAL:
-          const material = new MaterialParser(attrs)
-          materials.push(material)
+          if (beginDefine) {
+            const material = new MaterialParser(attrs)
+            materials.push(material)
+          }
         case TAGS.GROUP:
           if (beginScene) {
             beginGroup = true
@@ -77,23 +89,31 @@ export function parse(template: String, container: HTMLElement) {
         case TAGS.SCENE:
           beginScene = false
           break
-        case TAGS.CAMERA:
-          beginCamera = false
-          break
         case TAGS.GROUP:
           beginGroup = false
           break
         case TAGS.DEFINE:
           beginDefine = false
           break
+        case TAGS.LIGHTS:
+          beginLights = false
+          break
       }
     }
   })
+  parser.write(template)
+  parser.end()
 }
 
-export class Block3dParser {
-  template: String
-  constructor(template: String) {
-    this.template = template
+export class Block3d {
+  container: HTMLElement
+  static render(node: HTMLElement | null) {
+    if (node === null) return
+    let container = node.parentElement
+    if (container === null) return
+    parse(node.innerHTML, container)
+  }
+  constructor(node: HTMLElement | null) {
+
   }
 }

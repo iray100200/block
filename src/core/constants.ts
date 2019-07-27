@@ -8,5 +8,6 @@ export const TAGS = {
   LIGHTS: 'lights',
   BOX: 'box',
   SPHERE: 'sphere',
-  GROUP: 'group'
+  GROUP: 'group',
+  LIGHT: 'light'
 }
